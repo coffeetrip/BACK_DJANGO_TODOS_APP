@@ -9,16 +9,34 @@ from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework.response import Response
 
 
-@api_view(['POST'])
+@api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])   # 허가: 조건에 맞는 사람들 허가
 @authentication_classes([JSONWebTokenAuthentication])  # JWT 방식으로 인증 및 허가 하겠다.
 def todo_create(request):
-    serializer = TodoSerializer(data=request.POST)
-    if serializer.is_valid():
-        serializer.save()
-        return JsonResponse(serializer.data)
+    if request.method == 'GET':
+        userdata = User.objects.all()
+        userid = 0
+        for i in range(len(userdata)):
+            if userdata[i] == request.user:
+                userid = i
+                break    
+        userid += 1
+        todo = Todo.objects.filter(user_id=userid)
+        serializer = TodoSerializer(todo, many=True)
+        return Response(serializer.data)
+    elif request.method == 'POST':
+        serializer = TodoSerializer(data=request.POST)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return JsonResponse(serializer.data)
+            # return JsonResponse({'result':'true'})
+        return HttpResponse(status=400)
+
+        # title = request.data['title']
+        # user = request.user
+        # todo = Todo.objects.create(title=title, user=user)
+        # todo.save()
         # return JsonResponse({'result':'true'})
-    return HttpResponse(status=400)
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
