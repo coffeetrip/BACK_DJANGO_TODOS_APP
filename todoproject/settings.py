@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-
+import datetime
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -33,6 +33,8 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'todos',
     'accounts',
+    'rest_framework',  # API 구축
+    'corsheaders',  #  다른 도메인에서 리소스에 액세스
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,6 +46,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware' ,  #
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -120,3 +123,32 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# JWT
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+}
+
+JWT_AUTH = {
+    'JWT_SECRET_KEY': SECRET_KEY,  # JWT의 비밀키(Secret Key)로 어떤걸 사용할지 작성
+    'JWT_ALGORITHM': 'HS256',  # JWT 암호화에 사용되는 알고리즘을 지정
+    'JWT_ALLOW_REFRESH': True,  # WT 토큰을 갱신할 수 있게 할지 여부
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),  # JWT 토큰의 유효 기간
+    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=28),  # JWT 토큰 갱신의 유효기간
+}
+
+
+"""
+# CORS
+If True, the whitelist will not be used and all origins will be accepted. 
+Defaults to False.
+"""
+# 외부에 대한 요청을 화이트리스트로 요청
+CORS_ORIGIN_ALLOW_ALL = True  # 배포단계에서는 도메인만 열기 
