@@ -36,7 +36,7 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
-    path('todos/', include('todos.urls')),
+    path('api/v1/', include('todos.urls')), 
 
     path('swagger/', schema_view.with_ui('swagger')),  # drf_yasg
     path('redoc/', schema_view.with_ui('redoc')),  # drf_yasg
