@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'accounts',
     'rest_framework',  # API 구축
     'corsheaders',  #  다른 도메인에서 리소스에 액세스
+    'drf_yasg',  # API를 자동 문서화 해주는 패키지
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
