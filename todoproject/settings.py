@@ -153,3 +153,7 @@ Defaults to False.
 """
 # 외부에 대한 요청을 화이트리스트로 요청
 CORS_ORIGIN_ALLOW_ALL = True  # 배포단계에서는 도메인만 열기 
+
+
+
+AUTH_USER_MODEL = 'accounts.User'
