@@ -59,7 +59,7 @@ def todo_detail(request, id):
         # return HttpResponse(status=204)
 
 
-@api_view(['GET'])
+@api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([JSONWebTokenAuthentication])
 def user_detail(req, id):
@@ -71,3 +71,16 @@ def user_detail(req, id):
     if req.method == 'GET':
         serializer = UserSeriralizer(user)
         return JsonResponse(serializer.data)
+    else:
+        if request.user == user:
+            if request.method == 'PUT':
+                serializer = UserChangeSerializer(user, request.data)
+                if serializer.is_valid(raise_exception=True):
+                    serializer.save()
+                    serializer = UserSerializer(user)
+                    return JsonResponse(serializer.data)
+            else:
+                username = user.username
+                user.delete()
+                return JsonResponse({'message': f'그동안 감사했습니다. {username}님. 다시 만나기를 기대하겠습니다.'})
+    return HttpResponse('잘못된 접근입니다.', status=403)
