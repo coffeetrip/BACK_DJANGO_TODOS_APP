@@ -39,3 +39,17 @@ def todo_detail(request, id):
         todo.delete()
         return JsonResponse({'msg': '삭제되었습니다.'})
         # return HttpResponse(status=204)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([JSONWebTokenAuthentication])
+def user_detail(req, id):
+    user = get_object_or_404(User, id=id)
+
+    if req.user != user:
+        return HttpResponse(status=403)
+
+    if req.method == 'GET':
+        serializer = UserSeriralizer(user)
+        return JsonResponse(serializer.data)
