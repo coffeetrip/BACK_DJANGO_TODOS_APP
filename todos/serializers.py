@@ -12,4 +12,4 @@ class UserSeriralizer(serializers.ModelSerializer):
     todo_set = TodoSerializer(many=True)
     class Meta:
         model = User
-        fields = ['id', 'username', 'todo_set']
+        fields = ['id', 'username', 'todo_set', 'age']
